@@ -1,0 +1,9 @@
+name: diamond-megan
+channels:
+  - bioconda
+dependencies:
+  - diamond=0.9.14
+  - python=3.9.0
+  - biopython=1.87
+  - pandas=2.1.1
+  - megan=6.21.7

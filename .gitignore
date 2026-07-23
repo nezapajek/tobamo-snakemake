@@ -1,0 +1,60 @@
+# ------------------------------------------------------------------------------
+# Snakemake run artifacts
+# ------------------------------------------------------------------------------
+.snakemake/
+logs/
+results/
+
+# ------------------------------------------------------------------------------
+# Python
+# ------------------------------------------------------------------------------
+.venv/
+__pycache__/
+*.pyc
+
+# ------------------------------------------------------------------------------
+# Bioinformatics runtime data — never ship raw/large data
+# ------------------------------------------------------------------------------
+resources/SRA/
+resources/megan-map-Feb2022.db
+resources/*.dmnd
+resources/archive/
+
+# ------------------------------------------------------------------------------
+# Blanket data-format ignores, with explicit tracked exceptions below
+# ------------------------------------------------------------------------------
+*.fasta
+*.fa
+*.fastq
+*.fq
+*.fastq.gz
+*.fq.gz
+*.daa
+*.dmnd
+*.png
+
+# --- Required exceptions: tiny fixture files the pipeline needs to run ---
+!resources/TruSeq3-PE.fa
+!resources/TruSeq3-SE.fa
+!resources/empty.fasta
+!resources/empty.daa
+!.test/resources/**
+!images/pipeline.png
+
+# --- Required exceptions: tracked sample lists ---
+!config/samples.tsv
+!config/samples_debug.tsv
+
+# ------------------------------------------------------------------------------
+# Temporary and cache files
+# ------------------------------------------------------------------------------
+fasterq.tmp.tobamo.*
+temp_dev/
+*.tmp
+*.temp
+
+# ------------------------------------------------------------------------------
+# Local/dev-only config overrides
+# ------------------------------------------------------------------------------
+config/samples_local.tsv
+config/config_local.yaml

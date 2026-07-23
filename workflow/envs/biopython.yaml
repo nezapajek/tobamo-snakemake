@@ -1,0 +1,8 @@
+name: biopython
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.9.0
+  - biopython=1.87
+  - pandas=2.1.1

@@ -1,0 +1,56 @@
+# Main entrypoint of the workflow.
+# Please follow the best practices:
+# https://snakemake.readthedocs.io/en/stable/snakefiles/best_practices.html,
+# in particular regarding the standardized folder structure mentioned there.
+
+# conda activate tobamo-snakemake
+# snakemake --use-conda -c40 -k -p
+# time snakemake --use-conda -c 32 -p -k > output_29-3-2024.txt 2>&1
+# time snakemake --use-conda --rerun-trigger mtime -c40
+
+import pandas as pd
+
+
+configfile: "config/config.yaml"
+
+
+samples = pd.read_table(config["samples"])
+
+
+wildcard_constraints:
+    accession="ERR\d+|SRR\d+|DRR\d+",
+
+
+##### Target rules #####
+
+
+rule all:
+    input:
+        expand(
+            "results/{accession}/09_{accession}_megan6_results.csv",
+            accession=samples["samples"],
+        ),
+    output:
+        "results/megan6_results_combined.csv",
+    shell:
+        """
+        python workflow/scripts/combine_results.py {input} {output}
+        """
+
+
+##### Modules #####
+DEBUG = False
+
+if DEBUG:
+
+    include: "rules/trim_debug.smk"
+
+else:
+
+    include: "rules/trim.smk"
+
+
+include: "rules/assembly.smk"
+include: "rules/filtering.smk"
+include: "rules/diamond.smk"
+include: "rules/megan6.smk"

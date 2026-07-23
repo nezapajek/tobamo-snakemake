@@ -1,0 +1,101 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+
+jobs:
+  Formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Formatting
+        uses: github/super-linter@v5
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_SNAKEMAKE_SNAKEFMT: true
+
+  Linting:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Lint workflow
+      uses: snakemake/snakemake-github-action@v1.25.1
+      with:
+        directory: .
+        snakefile: workflow/Snakefile
+        args: "--lint"
+
+  Testing:
+    runs-on: ubuntu-latest
+    needs:
+      - Linting
+      - Formatting
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          channels: conda-forge,bioconda
+          channel-priority: strict
+
+      - name: Install snakemake and diamond
+        shell: bash -l {0}
+        run: mamba install -y -n base snakemake=7.32.4 diamond
+
+      # Two-tier design, entirely offline (no SRA/network dependency):
+      #
+      # Tier A - structural lint: a full dry run against the whole DAG using
+      # tiny committed fixtures. Catches missing-input regressions (e.g. the
+      # resources/ tracking gap this repo shipped with historically) in
+      # seconds, with zero data dependency beyond what's committed below.
+      #
+      # Tier B - real execution: tiny synthetic FASTQ reads (one PE, one SE
+      # sample) built around a made-up "tobamovirus-like" test protein are
+      # run for real through Trimmomatic, SPAdes, MEGAHIT, and Diamond,
+      # confirming those tools are actually wired together correctly.
+      #
+      # MEGAN6 taxonomy assignment (meganizer/megan_cli_export/megan6_concat)
+      # is intentionally NOT covered here: it depends on the real MEGAN
+      # mapping database (megan-map-Feb2022.db, ~8.7GB), which isn't
+      # shippable, and faking it would test nothing meaningful. Run the full
+      # pipeline once against config/samples_debug.tsv with real databases as
+      # a manual smoke test before tagging a release instead.
+
+      - name: Stage synthetic fixtures (Tier B)
+        shell: bash -l {0}
+        run: |
+          mkdir -p resources/SRA
+          cp .test/resources/SRR0000001_1.fastq.gz .test/resources/SRR0000001_2.fastq.gz resources/SRA/
+          cp .test/resources/SRR0000002.fastq.gz resources/SRA/
+          diamond makedb --in .test/resources/tpdb2_test_proteins.fasta -d resources/tpdb2.dmnd
+          diamond makedb --in .test/resources/nr_test_proteins.fasta -d resources/nr.dmnd
+
+      - name: Tier A - dry run (full DAG, structural check only)
+        shell: bash -l {0}
+        run: snakemake -n --configfile .test/config/config.yaml
+
+      - name: Tier B - real run through Diamond
+        shell: bash -l {0}
+        run: |
+          snakemake --use-conda -c2 -p --configfile .test/config/config.yaml \
+            results/SRR0000001/06_SRR0000001_diamond_nr_info.tsv \
+            results/SRR0000002/06_SRR0000002_diamond_nr_info.tsv
+
+      - name: Confirm expected Diamond hits were found
+        shell: bash -l {0}
+        run: |
+          for f in results/SRR0000001/06_SRR0000001_diamond_nr_info.tsv results/SRR0000002/06_SRR0000002_diamond_nr_info.tsv; do
+            if [ ! -s "$f" ]; then
+              echo "Expected a Diamond hit in $f but the file is empty" >&2
+              exit 1
+            fi
+          done
+          echo "Tier B fixtures produced the expected hits."
