@@ -157,9 +157,8 @@ graph TD
     D --> E
     E --> F[filter_contigs]
     F --> G[diamond_tpdb2]
-    F --> H[diamond_nr]
-    G --> I[meganizer]
-    H --> I
+    G --> H[diamond_nr]
+    H --> I[meganizer]
     I --> J[megan_cli_export]
     J --> K[megan6_concat]
 ```
