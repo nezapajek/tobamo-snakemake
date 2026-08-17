@@ -1,5 +1,11 @@
 #!/bin/bash
-source /etc/profile.d/sra-tools.sh
+
+if ! command -v fasterq-dump >/dev/null 2>&1; then
+    echo "error: fasterq-dump not found on PATH." >&2
+    echo "Install SRA Toolkit into the active environment first, e.g.:" >&2
+    echo "  conda install -n tobamo-snakemake -c bioconda -c conda-forge sra-tools=3.0.6" >&2
+    exit 1
+fi
 
 # Usage: workflow/scripts/download_sra.sh [path/to/samples.tsv]
 # Run from the repository root. Defaults to config/samples.tsv (the 253-sample

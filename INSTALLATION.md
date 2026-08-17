@@ -41,16 +41,20 @@ cd tobamo-snakemake
 ### 3. Create Conda Environment
 
 ```bash
-# Create environment with Snakemake
-conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 -c conda-forge -c bioconda
+# Create environment with Snakemake and SRA Toolkit
+conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 sra-tools=3.0.6 -c conda-forge -c bioconda
 
 # Activate environment
 conda activate tobamo-snakemake
 ```
 
+`sra-tools` must be in this environment (not a per-rule `workflow/envs/` one) because
+`workflow/scripts/download_sra.sh` runs standalone, outside the Snakemake DAG — see
+step 6 below.
+
 ### 4. Tool Dependencies
 
-**Note:** Snakemake will automatically handle all tool dependencies. Each workflow rule creates its own conda environment as defined in `workflow/envs/`. You don't need to manually install individual tools.
+**Note:** Snakemake will automatically handle the pipeline's own tool dependencies. Each workflow rule creates its own conda environment as defined in `workflow/envs/`. You don't need to manually install these individual tools.
 
 Dependencies are automatically managed by Snakemake when using the `--use-conda` flag.
 
@@ -60,6 +64,9 @@ The workflow automatically installs and manages:
 - Diamond (sequence search)
 - MEGAN tools (taxonomic classification)
 - BioPython and other utilities
+
+SRA Toolkit (`fasterq-dump`) is the one exception — it is used by a standalone script
+outside the Snakemake DAG, so it must already be in your active environment (step 3).
 
 Post-processing, clustering, phylogenetic placement, and the ML classifier have their
 own separate installation instructions in the companion

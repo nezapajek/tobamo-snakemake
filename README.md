@@ -64,7 +64,7 @@ git clone https://github.com/nezapajek/tobamo-snakemake.git
 cd tobamo-snakemake
 
 # 2. Install dependencies
-conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 -c conda-forge -c bioconda
+conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 sra-tools=3.0.6 -c conda-forge -c bioconda
 conda activate tobamo-snakemake
 
 # 3. Download SRA data for the shipped debug set (REQUIRED, safe default: 2 samples)
@@ -105,12 +105,15 @@ each debug FASTQ is truncated to its first 100k lines after download.
 
 ```bash
 # Create and activate the Snakemake environment
-conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 -c conda-forge -c bioconda
+conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 sra-tools=3.0.6 -c conda-forge -c bioconda
 conda activate tobamo-snakemake
 ```
 
 Snakemake manages each rule's own tool environment automatically from `workflow/envs/`
-when run with `--use-conda` — no separate per-tool installation is needed.
+when run with `--use-conda` — no separate per-tool installation is needed. The one
+exception is `sra-tools`: `workflow/scripts/download_sra.sh` runs outside the Snakemake
+DAG (see [Configuration](#configuration)), so `fasterq-dump` must be installed directly
+into this environment, as shown above.
 
 Post-processing and the machine-learning classifier are covered in the companion
 [`tobamo-analysis`](https://github.com/nezapajek/tobamo-analysis) repository, which has
@@ -143,7 +146,7 @@ workflow/scripts/download_sra.sh config/samples_debug.tsv
 - Skips already downloaded samples (resumable)
 
 **Requirements:**
-- SRA Toolkit (`fasterq-dump`) - automatically installed via conda
+- SRA Toolkit (`fasterq-dump`) - must be installed into the active conda environment (see [Installation](#installation)); it is not managed by Snakemake's `--use-conda`
 - ~10-100GB free space (depending on dataset size)
 - Stable internet connection
 
