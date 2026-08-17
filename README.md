@@ -16,7 +16,20 @@ We integrate the Conda package management system with Snakemake to establish a m
   <img src="images/pipeline.png" alt=" Flowchart illustrating a five-stage viral discovery pipeline. The process begins with dataset discovery via viral RNA-dependent RNA polymerase mining, followed by automated assembly and contig discovery using Snakemake. Candidate contigs then undergo parallel tracks for manual curation, clustering for phylogenetic analysis, and automated classification using a supervised machine learning model" width="500">
 </p>
 
-This repository covers **stage 2** of the pipeline above (automated assembly and candidate contig discovery). Dataset discovery, manual curation, clustering/phylogenetic placement, and the machine-learning classifier live in the companion [`tobamo-analysis`](https://github.com/nezapajek/tobamo-analysis) repository.
+This is the second of three repos this project's code/data was split into:
+
+1. [tobamo-analysis](https://github.com/nezapajek/tobamo-analysis) —
+   dataset discovery (Serratus PalmID query → 253 candidate SRRs), the step
+   upstream of this Snakemake pipeline, plus everything downstream of it:
+   manual curation, clustering/phylogenetic placement, and machine-learning
+   classification.
+2. **tobamo-snakemake** (this repo) — automated assembly and candidate
+   contig discovery on those SRRs (quality control, *de novo* assembly,
+   similarity search, preliminary taxonomic assignment).
+3. [tobamo-supp-data](https://github.com/nezapajek/tobamo-supp-data) —
+   supplementary tables, sequence alignments, and the supplementary methods
+   document referenced by the article. Archived on Zenodo for a stable,
+   citable DOI; not runnable code like the other two.
 
 ## Table of Contents
 
