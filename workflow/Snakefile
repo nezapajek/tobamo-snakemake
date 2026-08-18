@@ -18,7 +18,7 @@ samples = pd.read_table(config["samples"])
 
 
 wildcard_constraints:
-    accession="ERR\d+|SRR\d+|DRR\d+",
+    accession="ERR\d+|SRR\d+|DRR\d\d*",
 
 
 ##### Target rules #####
@@ -32,9 +32,14 @@ rule all:
         ),
     output:
         "results/megan6_results_combined.csv",
+    log:
+        logO="logs/all/all.log",
+        logE="logs/all/all.err.log",
+    conda:
+        "envs/biopython.yaml"
     shell:
         """
-        python workflow/scripts/combine_results.py {input} {output}
+        python workflow/scripts/combine_results.py {input} {output} > {log.logO} 2> {log.logE}
         """
 
 
