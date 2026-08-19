@@ -39,6 +39,9 @@ DRR3456789
 - One SRA accession per line
 - Supported prefixes: SRR, ERR, DRR
 - No empty lines or comments
+- File must end with a newline after the last accession — `download_sra.sh` reads
+  the file line-by-line with `while read`, which silently skips a final line that
+  isn't newline-terminated, so that last SRA accession would never be downloaded
 
 ## Usage Examples
 
