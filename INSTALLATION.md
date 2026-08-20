@@ -88,13 +88,15 @@ wget --directory-prefix=blast_db --cut-dirs=2 -Anr* ftp://ftp.ncbi.nlm.nih.gov/b
 ```
 
 2. **Tobamovirus Protein Database (tpdb2)**
-```bash
-# Build the tobamovirus database tpdb2
-diamond makedb --in <path/to/tobamo_proteins.fasta> -d <path/to/output/tpdb2.dmnd>
 
-# Copy to resources directory
-cp <path/to/tpdb2.dmnd> resources/tpdb2.dmnd
+The source protein set (`resources/tobamo_proteins.fasta`, 2177 curated tobamovirus
+protein sequences) ships with this repo, so no external download is needed — just
+build the Diamond database from it:
+```bash
+diamond makedb --in resources/tobamo_proteins.fasta -d resources/tpdb2
 ```
+This creates `resources/tpdb2.dmnd`, which `diamond_tpdb2` requires unconditionally —
+the pipeline will fail on the first real sample without it.
 
 3. **MEGAN Mapping Database**
 ```bash

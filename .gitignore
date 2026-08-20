@@ -38,6 +38,7 @@ resources/archive/
 !resources/TruSeq3-SE.fa
 !resources/empty.fasta
 !resources/empty.daa
+!resources/tobamo_proteins.fasta
 !.test/resources/**
 !images/pipeline.png
 
