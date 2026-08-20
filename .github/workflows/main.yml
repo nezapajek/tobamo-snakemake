@@ -43,13 +43,14 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           miniforge-version: latest
-          python-version: "3.11"
+          python-version: "3.10"
+          activate-environment: tobamo-snakemake
           channels: conda-forge,bioconda
           channel-priority: strict
 
       - name: Install snakemake and diamond
         shell: bash -l {0}
-        run: mamba install -y -n base snakemake=7.32.4 diamond
+        run: mamba install -y -n tobamo-snakemake snakemake=7.32.4 diamond
 
       # Two-tier design, entirely offline (no SRA/network dependency):
       #
