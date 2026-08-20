@@ -11,7 +11,7 @@ jobs:
   Formatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
       - name: Formatting
         uses: github/super-linter@v5
         env:
@@ -23,9 +23,9 @@ jobs:
   Linting:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Lint workflow
-      uses: snakemake/snakemake-github-action@v1.25.1
+      uses: snakemake/snakemake-github-action@v2.1.2
       with:
         directory: .
         snakefile: workflow/Snakefile
@@ -37,16 +37,17 @@ jobs:
       - Linting
       - Formatting
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@v4
         with:
           miniforge-version: latest
           python-version: "3.10"
           activate-environment: tobamo-snakemake
           channels: conda-forge,bioconda
           channel-priority: strict
+          conda-remove-defaults: true
 
       - name: Install snakemake and diamond
         shell: bash -l {0}
@@ -87,9 +88,10 @@ jobs:
       - name: Tier B - real run through Diamond
         shell: bash -l {0}
         run: |
-          snakemake --use-conda -c2 -p --configfile .test/config/config.yaml \
+          snakemake --use-conda -c2 -p \
             results/SRR0000001/06_SRR0000001_diamond_nr_info.tsv \
-            results/SRR0000002/06_SRR0000002_diamond_nr_info.tsv
+            results/SRR0000002/06_SRR0000002_diamond_nr_info.tsv \
+            --configfile .test/config/config.yaml
 
       - name: Confirm expected Diamond hits were found
         shell: bash -l {0}
