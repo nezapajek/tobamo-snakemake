@@ -64,7 +64,7 @@ git clone https://github.com/nezapajek/tobamo-snakemake.git
 cd tobamo-snakemake
 
 # 2. Install dependencies
-conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 sra-tools=3.0.6 -c conda-forge -c bioconda
+conda create -n tobamo-snakemake snakemake=7.32.4 python=3.11 sra-tools=3.0.6 -c conda-forge -c bioconda
 conda activate tobamo-snakemake
 
 # 3. Download SRA data for the shipped debug set (REQUIRED, safe default: 2 samples)
@@ -105,7 +105,7 @@ each debug FASTQ is truncated to its first 100k lines after download.
 
 ```bash
 # Create and activate the Snakemake environment
-conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 sra-tools=3.0.6 -c conda-forge -c bioconda
+conda create -n tobamo-snakemake snakemake=7.32.4 python=3.11 sra-tools=3.0.6 -c conda-forge -c bioconda
 conda activate tobamo-snakemake
 ```
 

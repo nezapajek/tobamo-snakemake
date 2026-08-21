@@ -12,7 +12,7 @@ This guide provides detailed installation instructions for the tobamo-snakemake 
 
 ### Software Requirements
 - **Operating System:** Linux (tested on Ubuntu 18.04+, CentOS 7+)
-- **Python:** 3.8-3.10
+- **Python:** 3.8-3.11
 - **Conda/Miniconda:** Latest version
 - **Git:** For repository cloning
 
@@ -42,7 +42,7 @@ cd tobamo-snakemake
 
 ```bash
 # Create environment with Snakemake and SRA Toolkit
-conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 sra-tools=3.0.6 -c conda-forge -c bioconda
+conda create -n tobamo-snakemake snakemake=7.32.4 python=3.11 sra-tools=3.0.6 -c conda-forge -c bioconda
 
 # Activate environment
 conda activate tobamo-snakemake

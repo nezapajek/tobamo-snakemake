@@ -16,7 +16,7 @@ git clone https://github.com/nezapajek/tobamo-snakemake.git
 cd tobamo-snakemake
 
 # Create conda environment
-conda create -n tobamo-snakemake snakemake=7.32.4 python=3.10 -c conda-forge -c bioconda
+conda create -n tobamo-snakemake snakemake=7.32.4 python=3.11 -c conda-forge -c bioconda
 conda activate tobamo-snakemake
 ```
 
